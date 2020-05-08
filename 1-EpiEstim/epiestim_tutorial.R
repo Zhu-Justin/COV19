@@ -49,6 +49,7 @@ head(res_parametric_si$R)
 
 # Write the rate of transmission values
 Rt <- data.frame(res_parametric_si$R)
+names(Rt[c(1:4, 8)])
 write.csv(Rt, "Rt.csv")
 
 mean(Flu2009$incidence$I)

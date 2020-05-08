@@ -8,7 +8,7 @@ library(shiny)
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("World Health Organization"),
+  titlePanel("WHO-PAHO"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -149,6 +149,7 @@ server <- function(input, output) {
       }
 
     Rt <- df()$R
+    Rt <- Rt[c(1:4, 8)]
     if(input$disp == "head") {
       return(head(Rt))
     }
@@ -166,7 +167,7 @@ server <- function(input, output) {
   })
   output$contents5 <- renderPrint({
       x <- df()$R$Mean
-    return(writeLines(c("The current rate of transmission is estimated to be", x[length(x)], "people per day")))
+    return(writeLines(c("The current reproductive number (R) is estimated to be", round(x[length(x)],digits=2))))
      # return(, x[length(x)])
   })  
   # Downloadable csv of selected dataset ----
