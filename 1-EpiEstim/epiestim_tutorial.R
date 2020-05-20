@@ -10,6 +10,19 @@ data(Flu2009)
 head(Flu2009$incidence)
 head(Flu2009$si_data)
 write.csv(Flu2009, "Flu2009.csv")
+df <- data.frame(Flu2009$incidence)
+plot(df)
+df$I
+
+# 1. Option for plotting with ggplot
+g <- ggplot(df, aes(x=dates, y=I))  # area and poptotal are columns in 'midwest'
+plot(g)
+g1 <- g + geom_point()
+plot(g1)
+g2 <- g + geom_point() + geom_smooth(method="lm")  # set se=FALSE to turnoff confidence bands
+plot(g2)
+
+
 
 ## 1. serial interval (SI) distribution:
 ## interval-ceonsored serial interval data:
@@ -41,6 +54,8 @@ write.csv(Rt, "Rt.csv")
 mean(Flu2009$incidence$I)
 sd(Flu2009$incidence$I)
 
+# Option 2: Plotting with built-in EpiEstim plot function
+plot(res_parametric_si, what='incid')
 # Plot
 png("res_parametric_si.png")
 plot(res_parametric_si, legend = FALSE)

@@ -13,7 +13,12 @@ ui <- fluidPage(
               br(),
               p("span does the same thing as div, but it works with",
                 span("groups of words", style = "color:blue"),
-                "that appear inside a paragraph.")
+                "that appear inside a paragraph."),
+              h1('In a long time ago'),
+              h2('in a galaxy'),
+              h3('far, far'),
+              h4('away'),
+              h5('...')
     )
   )
 )

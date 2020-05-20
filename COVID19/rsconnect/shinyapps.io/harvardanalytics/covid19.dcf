@@ -1,0 +1,10 @@
+name: covid19
+title:
+username:
+account: harvardanalytics
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2218033
+bundleId: 3086668
+url: https://harvardanalytics.shinyapps.io/covid19/
+when: 1588264701.33864
