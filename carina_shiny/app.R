@@ -140,7 +140,7 @@ server <- function(input, output) {
     output$content3 <- renderPrint({
         x <- df()$R$Mean
         # what is x[length(x)]?
-        return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)]), digits = 2)))
+        return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))))
         
     })
     
@@ -153,13 +153,11 @@ server <- function(input, output) {
             return(df()$R)
         )
         
-        Rt <- df()$R
-        
         if(input$disp == "head") {
-            return(head(Rt))
+            return(head(df()$R))
         }
         else {
-            return(Rt)
+            return(df()$R)
         }
     
 })
