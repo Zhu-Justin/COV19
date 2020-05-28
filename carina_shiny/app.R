@@ -63,13 +63,13 @@ ui <- fluidPage(
                          withMathJax(includeMarkdown("/Users/carinapeng/Harvard-WHO/carina_shiny/first_page.Rmd")),
                          tableOutput("content1")),
                 tabPanel("Plot",
-                         plotOutput("content2")),
+                         plotOutput("content2"),
+                         downloadButton("downloadPlot", "Download plot")),
                 tabPanel("Summary",
                          h3("Summary Statistics"),
                          verbatimTextOutput("content3"),
                          tableOutput("content4"),
-                         downloadButton("download",
-                                        label = "Download summary statistics")
+                         downloadButton("downloadData", "Download summary statistics")
                          )
                 
             )
@@ -139,19 +139,18 @@ server <- function(input, output) {
     
     output$content3 <- renderPrint({
         x <- df()$R$Mean
+        # what is x[length(x)]?
         return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)]), digits = 2)))
         
     })
     
     output$content4 <- renderTable({
-        df
+        df()$R %>%
+            select("t_start", "t_end", "Mean(R)", "Std(R)", "Median(R)")
         
     })
     
-    output$download <- downloadHandler(
-        
-        
-    )
+    
     
     
 }
