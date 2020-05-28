@@ -141,7 +141,6 @@ server <- function(input, output) {
         x <- df()$R$Mean
         # what is x[length(x)]?
         paste("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))
-        # return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))))
         
     })
     
@@ -160,8 +159,29 @@ server <- function(input, output) {
         else {
             return(df()$R)
         }
+    })
     
-})
+    output$downloadPlot <- downloadHandler(
+        filename = function(){
+            paste("R_plot", "png", sep = ".")
+        },
+        
+        content = function(file){
+            png(file)
+            plot(df())
+            dev.off()
+        }
+    )
+    
+    output$downloadData <- downloadHandler(
+        filename = function(){
+            paste("summary-statistics", "csv", sep = ".")
+        },
+        
+        content = function(file){
+            write.csv(df()$R, file)
+        }
+    )
 
 }
 
