@@ -137,10 +137,11 @@ server <- function(input, output) {
         
     })
     
-    output$content3 <- renderPrint({
+    output$content3 <- renderText({
         x <- df()$R$Mean
         # what is x[length(x)]?
-        return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))))
+        paste("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))
+        # return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))))
         
     })
     
