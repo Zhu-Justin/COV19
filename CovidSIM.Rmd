@@ -1,0 +1,39 @@
+---
+title: "CovidSIM Modeling"
+author: "Carina Peng"
+date: "5/27/2020"
+output: html_document
+---
+
+```{r}
+
+# Prodromal period [days] 
+Dp<-2
+
+# Early infective period
+Di<-5
+
+# Late infective period [days]
+Dl<-7
+
+# Relative contagiousness in the prodromal period
+Cp<-1
+
+# Relative contagiousness in the late infective period
+Cl<-0.05
+
+# Infections which will lead to sickness
+Fsick<-0.67
+
+# Probability that a sick patient is isolated
+Fiso<-0.5
+
+# Contact reduction for cases in home isolation
+Phome<- 0.75
+
+impact_case_isolation <- (Cp*Dp+(1-Fsick*Fiso*Phome)*(Di+Cl*Dl))/(Cp*Dp+Di+Cl*Dl)
+
+impact_case_isolation
+
+```
+

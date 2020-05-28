@@ -8,7 +8,7 @@ library(shiny)
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("World Health Organization"),
+  titlePanel("WHO / PAHO"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
