@@ -145,32 +145,25 @@ server <- function(input, output) {
     })
     
     output$content4 <- renderTable({
-        df()$R)
         
-    })
-    
-    output$downloadPlot <- downloadHandler(
-        filename = function(){
-            
-        },
-        content = function(file){
-            
+        if (is.null(csv()) || is.null(df())){
+            return(NULL)
         }
+        else (
+            return(df()$R)
+        )
         
+        Rt <- df()$R
         
-    )
-    
-    output$downloadData <- downloadHandler(
-        filename = function(){
-            paste("")
-        },
-        
-        content = function(file){
-            
+        if(input$disp == "head") {
+            return(head(Rt))
         }
-    )
+        else {
+            return(Rt)
+        }
     
-    
+})
+
 }
 
 # Run the application 
