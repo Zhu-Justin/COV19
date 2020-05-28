@@ -145,12 +145,30 @@ server <- function(input, output) {
     })
     
     output$content4 <- renderTable({
-        df()$R %>%
-            select("t_start", "t_end", "Mean(R)", "Std(R)", "Median(R)")
+        df()$R)
         
     })
     
+    output$downloadPlot <- downloadHandler(
+        filename = function(){
+            
+        },
+        content = function(file){
+            
+        }
+        
+        
+    )
     
+    output$downloadData <- downloadHandler(
+        filename = function(){
+            paste("")
+        },
+        
+        content = function(file){
+            
+        }
+    )
     
     
 }
