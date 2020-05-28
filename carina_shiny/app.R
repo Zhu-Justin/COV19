@@ -1,3 +1,4 @@
+
 # Load libraries
 library(shiny)
 library(EpiEstim)
@@ -56,13 +57,24 @@ ui <- fluidPage(
         ),
         
         mainPanel(
-            tableOutput("contents"),
-            plotOutput("plot"),
-            plotOuput("ggplot")
-        )
-    )
+            tabsetPanel(
+                tabPanel("Table",
+                         # https://shiny.rstudio.com/gallery/mathjax.html
+                         withMathJax(includeMarkdown("/Users/carinapeng/Harvard-WHO/carina_shiny/first_page.Rmd")),
+                         tableOutput("content1")),
+                tabPanel("Plot",
+                         plotOutput("content2")),
+                tabPanel("Summary",
+                         h3("Summary Statistics"),
+                         verbatimTextOutput("content3"),
+                         tableOutput("content4"),
+                         downloadButton("download",
+                                        label = "Download summary statistics")
+                         )
+                
+            )
     
-)
+)))
 
 # Define server logic required to read data and produce plot
 server <- function(input, output) {
@@ -79,7 +91,8 @@ server <- function(input, output) {
     df <- reactive({
         req(input$file1)
         x = csv()
-        x[,1]<-as.Date(x[,1], "%d/%m/%Y")
+        # Subset first column and convert to dates
+        x[,1] <- as.Date(x[,1], "%d/%m/%y")
         dfR <- estimate_R(x, 
                           method = "parametric_si", 
                           config = make_config(list(
@@ -88,11 +101,7 @@ server <- function(input, output) {
         return(dfR)
     })
     
-    output$contents <- renderTable({
-        
-        # input$file1 will be NULL initially. After the user selects
-        # and uploads a file, head of that data file by default,
-        # or all rows if selected, will be shown.
+    output$content1 <- renderTable({
         
         req(input$file1)
         
@@ -128,22 +137,11 @@ server <- function(input, output) {
         
     })
     
-    # Plotting using ggplot2
-    
-    output$ggplot <- renderPlot({
-        
-        res_parametric_si <- estimate_R(x, 
-                                        method = "parametric_si", 
-                                        config = make_config(list(
-                                            mean_si = 4.8, 
-                                            std_si = 2.3)))
-        
-        plot_R_data <- data.frame(dates = res_parametric_si$dates)
-        
+    output$summary <- renderPrint({
+        x <- df()$R$Mean
+        return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)]), digits = 2)))
         
     })
-        
-
     
     
 }
