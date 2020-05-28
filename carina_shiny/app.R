@@ -131,17 +131,27 @@ server <- function(input, output) {
     
     
     # Plotting with original EpiEstim plots
-    output$plot <- renderPlot({
+    output$content2 <- renderPlot({
         
         plot(df())
         
     })
     
-    output$summary <- renderPrint({
+    output$content3 <- renderPrint({
         x <- df()$R$Mean
         return(writeLines(c("The current effective reproductive number is estimated to be", round(x[length(x)]), digits = 2)))
         
     })
+    
+    output$content4 <- renderTable({
+        df
+        
+    })
+    
+    output$download <- downloadHandler(
+        
+        
+    )
     
     
 }
