@@ -60,7 +60,7 @@ ui <- fluidPage(
             tabsetPanel(
                 tabPanel("Table",
                          # https://shiny.rstudio.com/gallery/mathjax.html
-                         withMathJax(includeMarkdown("/Users/carinapeng/Harvard-WHO/carina_shiny/first_page.Rmd")),
+                         withMathJax(includeMarkdown("/Users/carinapeng/Harvard-WHO/carina/first_page.Rmd")),
                          tableOutput("content1")),
                 tabPanel("Plot",
                          plotOutput("content2"),
