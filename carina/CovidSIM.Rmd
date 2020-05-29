@@ -1,44 +1,37 @@
 ---
-title: "CovidSIM"
-author: "Carina Peng"
+title: "CovidSIM Parameters Calculator"
 date: "5/28/2020"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+library(shiny)
+library(EpiEstim)
+library(ggplot2)
+library(incidence)
+library(cluster.datasets)
 ```
 
-```{r}
+```{r, echo = FALSE}
 # Prodromal period [days] 
 Dp<-2
-47.5
 
 # Early infective period, 
 Di<-5
-47.5
 
 # Late infective period [days], 
 Dl<-7
-5
 
 # Relative contagiousness in the prodromal period, 
 Cp<-1
 
 # Relative contagiousness in the late infective period, 
-Cl<-0.05/0.475
-Cl
-# [1] 0.1052632
-0.025/0.0475
-# [1] 0.5263158
-0.05/(0.475)
-# [1] 0.1052632
-# [1] 1.052632
-# [1] 0.05263158
+Cl<-0.05
 
 # Infections which will lead to sickness, 
 Fsick<-0.67
-# Fsick = P(Prodromal + Early Infective + Late Infective | Latent Period)
 
 # Probability that a sick patient is isolated, 
 Fiso<-0.5
@@ -48,10 +41,45 @@ Phome<- 0.75
 
 # Estimation of the impact by contact reduction 
 # This section allows to estimate the impact of contact reduction based on a number of parameters. The parameter for R0 can be suggested by default in the interface, but it should be allowed to be changed. With those parameters, the formula calculates the impact on the transmission by applying contact reduction. 
+
 impact_case_isolation<-(Cp*Dp+(1-Fsick*Fiso*Phome)*(Di+Cl*Dl))/(Cp*Dp+Di+Cl*Dl)
+
 impact_case_isolation
 # [1] 0.8171173
 ```
 
+```{r, echo = FALSE}
 
+R0 <- 3.7
+
+pais <- read.csv("/Users/carinapeng/Harvard-WHO/1-EpiEstim/pais_timeseries.csv")
+
+pais[,1] <- as.Date(pais[,1], "%d/%m/%y")
+
+df <- estimate_R(pais,
+           method = "parametric_si",
+           config = make_config(list(mean_si = 4.8,
+                                     std_si = 2.3)))
+
+Rt <- data.frame(df$R)
+
+Rt_observed <- mean(Rt$Mean.R.)
+
+impact_contact_reduction <- Rt_observed / (R0 * impact_case_isolation)
+
+impact_contact_reduction
+# [1] 0.6078144
+
+```
+
+```{r, echo = FALSE}
+
+perc_contact_reduction <- round((1 - impact_contact_reduction) *100, digits = 2)
+
+perc_contact_reduction
+# [1] 39.22
+
+```
+
+> *The percentage of contact reduction for the observed Rt is estimated to be *`r perc_contact_reduction`*%.*
 
