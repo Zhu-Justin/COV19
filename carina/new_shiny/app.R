@@ -7,7 +7,7 @@ library(cluster.datasets)
 
 # Define UI for application
 ui <- fluidPage(navbarPage("WHO / PAHO",
-                           tabPanel("First task",
+                           tabPanel("EpiEstim",
                                     sidebarLayout(
                                         sidebarPanel(
                                             
@@ -70,7 +70,7 @@ ui <- fluidPage(navbarPage("WHO / PAHO",
                            
                            
                            tabPanel(
-                               "Second task",
+                               "CovidSIM",
                                sidebarPanel(
                                    "CovidSIM",
                                    numericInput("Dp", "Prodromal period [days]:", 2),
@@ -91,14 +91,125 @@ ui <- fluidPage(navbarPage("WHO / PAHO",
                                    
                                ),
                                mainPanel(
-                                   tags$label(h3("Status/Output")),
-                                   verbatimTextOutput("calculation"),
-                                   tableOutput("tabledata")
+                                   tabsetPanel(
+                                       tabPanel("Welcome",
+                                                withMathJax(includeMarkdown("Modeling-COVID19.md"))
+                                                ),
+                                       tabPanel("Calculation",
+                                                tags$label(h3("Status/Output")),
+                                                verbatimTextOutput("calculation"),
+                                                tableOutput("tabledata")
+                                                )
+                                   )
                                )
 )
 ))
 
 server <- function(input, output, session){
+    
+    csv <- reactive({
+        req(input$file1)
+        read.csv(input$file1$datapath,
+                 header = input$header,
+                 sep = input$sep,
+                 quote = input$quote)
+    })
+    
+    # Apply parametric_si to the uploaded CSV input
+    df <- reactive({
+        req(input$file1)
+        x = csv()
+        # Subset first column and convert to dates
+        x[,1] <- as.Date(x[,1], "%d/%m/%y")
+        dfR <- estimate_R(x, 
+                          method = "parametric_si", 
+                          config = make_config(list(
+                              mean_si = 4.8, 
+                              std_si = 2.3)))
+        return(dfR)
+    })
+    
+    output$content1 <- renderTable({
+        
+        req(input$file1)
+        
+        # when reading semicolon separated files,
+        # having a comma separator causes `read.csv` to error
+        tryCatch(
+            {
+                df <- read.csv(input$file1$datapath,
+                               header = input$header,
+                               sep = input$sep,
+                               quote = input$quote)
+            },
+            error = function(e) {
+                # return a safeError if a parsing error occurs
+                stop(safeError(e))
+            }
+        )
+        
+        if(input$disp == "head") {
+            return(head(df))
+        }
+        else {
+            return(df)
+        }
+        
+    })
+    
+    
+    # Plotting with original EpiEstim plots
+    output$content2 <- renderPlot({
+        
+        plot(df())
+        
+    })
+    
+    output$content3 <- renderText({
+        x <- df()$R$Mean
+        # what is x[length(x)]?
+        paste("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))
+        
+    })
+    
+    output$content4 <- renderTable({
+        
+        if (is.null(csv()) || is.null(df())){
+            return(NULL)
+        }
+        else (
+            return(df()$R)
+        )
+        
+        if(input$disp == "head") {
+            return(head(df()$R))
+        }
+        else {
+            return(df()$R)
+        }
+    })
+    
+    output$downloadPlot <- downloadHandler(
+        filename = function(){
+            paste("R_plot", "png", sep = ".")
+        },
+        
+        content = function(file){
+            png(file)
+            plot(df())
+            dev.off()
+        }
+    )
+    
+    output$downloadData <- downloadHandler(
+        filename = function(){
+            paste("summary-statistics", "csv", sep = ".")
+        },
+        
+        content = function(file){
+            write.csv(df()$R, file)
+        }
+    )
     
     datasetInput <- reactive({
         
