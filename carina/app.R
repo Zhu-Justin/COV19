@@ -79,9 +79,7 @@ ui <- fluidPage(
                          numericInput("Cl", "Relative contagiousness in the late infective period:", 0.05),
                          numericInput("Fsick", "Infections which will lead to sickness:", 0.67),
                          numericInput("Fiso", "Probability that a sick patient is isolated:", 0.5),
-                         numericInput("Phome", "Contact reduction for cases in home isolation:", 0.75)
-                    
-                )
+                         numericInput("Phome", "Contact reduction for cases in home isolation:", 0.75))
                 
             )
     
