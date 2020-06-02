@@ -93,8 +93,7 @@ ui <- fluidPage(navbarPage("WHO / PAHO",
                                mainPanel(
                                    tabsetPanel(
                                        tabPanel("Welcome",
-                                                withMathJax(includeMarkdown("Modeling-COVID19.md"))
-                                                ),
+                                                withMathJax(includeMarkdown("/Users/carinapeng/Harvard-WHO/carina/covidsim_home.Rmd"))),
                                        tabPanel("Calculation",
                                                 tags$label(h3("Status/Output")),
                                                 verbatimTextOutput("calculation"),
