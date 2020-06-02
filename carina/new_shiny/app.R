@@ -73,6 +73,8 @@ ui <- fluidPage(navbarPage("WHO / PAHO",
                                "CovidSIM",
                                sidebarPanel(
                                    "CovidSIM",
+                                   numericInput("R0", "R0:", 3.7),
+                                   numericInput("Rt", "Rt:", 1.2),
                                    numericInput("Dp", "Prodromal period [days]:", 2),
                                    numericInput("Di", "Early infective period [days]:", 5),
                                    numericInput("Dl", "Late infective period [days]:", 7),
@@ -97,7 +99,9 @@ ui <- fluidPage(navbarPage("WHO / PAHO",
                                        tabPanel("Calculation",
                                                 tags$label(h3("Status/Output")),
                                                 verbatimTextOutput("calculation"),
-                                                tableOutput("tabledata")
+                                                tableOutput("tabledata"),
+                                                tableOutput("tabledata2"),
+                                                tableOutput("tabledata3")
                                                 )
                                    )
                                )
@@ -167,7 +171,8 @@ server <- function(input, output, session){
     output$content3 <- renderText({
         x <- df()$R$Mean
         # what is x[length(x)]?
-        paste("The current effective reproductive number is estimated to be", round(x[length(x)],digits=2))
+        x_round <- round(x[length(x)],digits=2)
+        paste("The current effective reproductive number is estimated to be", x_round)
         
     })
     
@@ -214,8 +219,26 @@ server <- function(input, output, session){
         
         impact_case_isolation <- (input$Cp*input$Dp+(1-input$Fsick*input$Fiso*input$Phome)*(input$Di+input$Cl*input$Dl))/(input$Cp*input$Dp+input$Di+input$Cl*input$Dl)
         impact_case_isolation <- data.frame(impact_case_isolation)
-        names(impact_case_isolation) <- "BMI"
+        names(impact_case_isolation) <- "Impact of Case Isolation"
         print(impact_case_isolation)
+        
+    })
+    
+    datasetInput2 <- reactive({
+        
+        impact_contact_reduction <- input$Rt / (input$R0 * impact_case_isolation)
+        impact_contact_reduction <- data.frame(impact_contact_reduction)
+        names(impact_contact_reduction) <- "Impact of Contact Reduction"
+        print(impact_contact_reduction)
+        
+    })
+    
+    datasetInput3 <- reactive({
+        
+        perc_contact_reduction <- 1 - impact_contact_reduction
+        perc_contact_reduction <- data.frame(perc_contact_reduction)
+        names(perc_contact_reduction) <- "Percentage of Contact Reduction for the Observed Rt"
+        print(perc_contact_reduction)
         
     })
     
@@ -230,6 +253,19 @@ server <- function(input, output, session){
     output$tabledata <- renderTable({
         if(input$submitbutton>0) {
             isolate(datasetInput())
+        }
+    })
+    
+    
+    output$tabledata2 <- renderTable({
+        if(input$submitbutton>0) {
+            isolate(datasetInput2())
+        }
+    })
+    
+    output$tabledata3 <- renderTable({
+        if(input$submitbutton>0) {
+            isolate(datasetInput3())
         }
     })
 }

@@ -1,4 +1,4 @@
-# CovidSIM.eu Intervention Parameter 
+# CovidSIM.eu Parameters 
 
 This calculator estimates the impact on transmission by case isolation, contact reduction, which can then be used as a paramter on CovidSIM.eu.
 
