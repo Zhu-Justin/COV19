@@ -235,7 +235,7 @@ server <- function(input, output, session){
     
     datasetInput3 <- reactive({
         
-        perc_contact_reduction <- 1 - impact_contact_reduction
+        perc_contact_reduction <- round((1 - impact_contact_reduction) *100, digits = 2)
         perc_contact_reduction <- data.frame(perc_contact_reduction)
         names(perc_contact_reduction) <- "Percentage of Contact Reduction for the Observed Rt"
         print(perc_contact_reduction)
