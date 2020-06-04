@@ -1,7 +1,15 @@
 # CovidSIM.eu Parameters 
 
-This calculator estimates the impact on transmission by case isolation, contact reduction, which can then be used as a paramter on CovidSIM.eu.
+This calculator estimates the impact on transmission by case isolation, contact reduction, which can then be used as parameters on CovidSIM.eu.
 
-Estimation of the impact on transmission by case isolation
-This section allows to estimate the impact of case isolation based on a number of chosen parameters. These parameters below can be suggested by default in the interface, but it should be allowed to be changed. With those parameters, the formula calculates the impact on the transmission by applying case isolation.
+**Estimation of the impact on transmission by case isolation**
+These parameters can be suggested by default in the interface, but it should be allowed to be changed. With those parameters, the formula calculates the impact on the transmission by applying case isolation.
+
+**Estimation of the impact by contact reduction**
+The parameter for R0 can be suggested by default in the interface, but it should be allowed to be changed. With those parameters, the formula calculates the impact on the transmission by applying contact reduction.
+
+**Percentage of contact reduction for the observed Rt**
+This section allows to estimate the contact reduction parameter to be included in the CovidSIM based on the calculated impact of contact reduction in the above section.
+
+
 

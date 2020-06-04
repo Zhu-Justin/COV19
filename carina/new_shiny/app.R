@@ -72,7 +72,7 @@ ui <- fluidPage(navbarPage("WHO / PAHO",
                            tabPanel(
                                "CovidSIM",
                                sidebarPanel(
-                                   "CovidSIM",
+                    
                                    numericInput("R0", "R0:", 3.7),
                                    numericInput("Rt", "Rt:", 1.2),
                                    numericInput("Dp", "Prodromal period [days]:", 2),
