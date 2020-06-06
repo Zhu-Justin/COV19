@@ -9,6 +9,7 @@ This interface will help the World Health Organization and many countries succes
 https://harvardanalytics.shinyapps.io/covid19/
 
 # The Team
+
 Justin Zhu: justinzhu@college.harvard.edu
 
 Amy Tan: atan@college.harvard.edu
@@ -21,10 +22,10 @@ Theresa Nguyen: nguyenn@college.harvard.edu
 
 Carina Peng: fpeng@college.harvard.edu
 
+
 # World Health Organization Collaborators
 Dr. Ana Riviere-Cinnamond
 
 Dr. Manuel Jose Sanchez Vazquez
 
 Dr. Enrique Perez
-
