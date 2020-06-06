@@ -6,7 +6,7 @@ library(incidence)
 library(cluster.datasets)
 
 # Define UI for application
-ui <- fluidPage(navbarPage("WHO / PAHO",
+ui <- fluidPage(navbarPage("WHO-PAHO",
                            tabPanel("EpiEstim",
                                     sidebarLayout(
                                         sidebarPanel(
