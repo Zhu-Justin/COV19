@@ -5,6 +5,6 @@ account: harvardanalytics
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2218033
-bundleId: 3121001
+bundleId: 3257645
 url: https://harvardanalytics.shinyapps.io/covid19/
-when: 1588951053.90404
+when: 1591889712.87783

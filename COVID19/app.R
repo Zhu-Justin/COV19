@@ -51,8 +51,10 @@ ui <- fluidPage(
       # Input: Select number of rows to display ----
       radioButtons("disp", "Display",
                    choices = c(Head = "head",
-                               All = "all"),
-                   selected = "head")
+                               All = "all",
+                               Tail = "tail"
+                               ),
+                   selected = "tail")
       
     ),
     
@@ -75,7 +77,80 @@ ui <- fluidPage(
                            h3("Summary Statistics"),
                            verbatimTextOutput("contents5"),
                            tableOutput("contents2"),
-                           downloadButton("downloadData2", "Download Summary Statistics of Transmission Rates"))
+                           downloadButton("downloadData2", "Download Summary Statistics of Transmission Rates")),
+                  tabPanel("Public Policy Analysis",
+                           h3("Estimating the Impact of Public Health Measures on COVID-19 Transmission as Modeled in the CovidSIM Interface"),
+                           withMathJax(includeMarkdown("policy.md")),
+                           h3("Period Duration Parameters (Days)"),
+                           fluidRow(
+                                    column(3,
+
+                                           # Copy the line below to make a slider bar 
+                                           sliderInput("Dp", label = h4("Prodromal Period (Days)"), min = 0, 
+                                                       max = 31, value = 2)
+                                           ),
+                                    column(3,
+
+                                           # Copy the line below to make a slider range 
+                                           sliderInput("Di", label = h4("Early Infective (Days)"), min = 0, 
+                                                       max = 31, value = 5)
+                                    ),
+                                    column(3,
+
+                                           # Copy the line below to make a slider range 
+                                           sliderInput("Dl", label = h4("Late Infective (Days)"), min = 0, 
+                                                       max = 31, value = 7)
+                                    )
+                                    ),
+                           h3("Relative Contagiousness Parameters (%)"),
+                           fluidRow(
+                                    column(3,
+
+                                           # Copy the line below to make a slider bar 
+                                           sliderInput("Cp", label = h4("Prodromal (%)"), min = 0, 
+                                                       max = 1, value = 1)
+                                           ),
+                                    column(3,
+
+                                           # Copy the line below to make a slider range 
+                                           sliderInput("Cl", label = h4("Early Infective (%)"), min = 0, 
+                                                       max = 1, value = 0.05)
+                                    ),
+                                    column(3,
+
+                                           # Copy the line below to make a slider range 
+                                           sliderInput("R0", label = h4("Initial Rate of Infection"), min = 0, 
+                                                       max = 10, value = 3.7, step=0.1)
+                                    )
+                                    ),
+                           h3("Transmission Parameters"),
+                           fluidRow(
+                                    column(3,
+
+                                           # Copy the line below to make a slider bar 
+                                           sliderInput("Fsick", label = h4("Infections Which Will Lead to Sickness (%)"), min = 0, 
+                                                       max = 1, value = 0.67),
+                                           ),
+                                    column(3,
+
+                                           # Copy the line below to make a slider range 
+                                           sliderInput("Fiso", label = h4("Probability Sick Person is Isolated (%)"), min = 0, 
+                                                       max = 1, value = 0.5)
+                                    ),
+                                    column(3,
+
+                                           # Copy the line below to make a slider range 
+                                           sliderInput("Phome", label = h4("Contact Reduction for Isolated Cases (%)"), min = 0, 
+                                                       max = 1, value = 0.75)
+                                    ),
+                                    ),
+                           h3("Impact of Isolating Cases Only"),
+                           verbatimTextOutput("impactcaseisolation"),
+                           h3("Impact of Contact Reduction Policies on the Transmission"),
+                           verbatimTextOutput("impactcontactreduction"),
+                           h3("Percentage of General Contact Reduction (to be used in CovidSIM)"),
+                           verbatimTextOutput("pctcontactreduction")
+                  )
       )
     )
     
@@ -125,6 +200,9 @@ server <- function(input, output) {
     if(input$disp == "head") {
       return(head(csv()))
     }
+    if(input$disp == "tail") {
+      return(tail(csv()))
+    }
     else {
       return(csv())
     }
@@ -152,6 +230,9 @@ server <- function(input, output) {
     Rt <- Rt[c(1:4, 8)]
     if(input$disp == "head") {
       return(head(Rt))
+    }
+    if(input$disp == "tail") {
+      return(tail(Rt))
     }
     else {
       return(Rt)
@@ -187,6 +268,34 @@ server <- function(input, output) {
     Rt <- df()$R
       write.csv(Rt, file, row.names = FALSE)
     })
+
+    contact <- reactive({
+        impact_case_isolation<-(input$Cp*input$Dp+(1-input$Fsick*input$Fiso*input$Phome)*(input$Di+input$Cl*input$Dl))/(input$Cp*input$Dp+input$Di+input$Cl*input$Dl)
+        return(impact_case_isolation)
+    })
+
+  output$impactcaseisolation <- renderPrint({
+        # impact_case_isolation<-(input$Cp*input$Dp+(1-input$Fsick*input$Fiso*input$Phome)*(input$Di+input$Cl*input$Dl))/(input$Cp*input$Dp+input$Di+input$Cl*input$Dl)
+        y <- contact()
+      # return(writeLines("Case Isolation Number Obtained", contact()))
+      return(writeLines(c("Case Isolation Number Obtained",y)))
+       # return(y)
+      # return(impact_case_isolation)
+  })
+  output$impactcontactreduction <- renderPrint({
+      x <- df()$R$Mean
+      Rt_observed <- x[length(x)]
+      impact_contact_reduction <- Rt_observed / (input$R0 * contact())
+    return(writeLines(c("The Reduction of COVID-19 Cases is estimated to be", round(impact_contact_reduction,digits=2))))
+     # return(, x[length(x)])
+  })  
+  output$pctcontactreduction <- renderPrint({
+      x <- df()$R$Mean
+      Rt_observed <- x[length(x)]
+      impact_contact_reduction <- (1 - Rt_observed / (input$R0 * contact()))*100
+    return(writeLines(c("Percent Reduction of COVID-19 Cases is estimated to be", round(impact_contact_reduction,digits=2), "Percent")))
+     # return(, x[length(x)])
+  })  
 }
 
 # Create Shiny app ----
