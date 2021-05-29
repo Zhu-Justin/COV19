@@ -1,4 +1,4 @@
-# Harvard-WHO
+# COVID-19 Estimator
 
 This project contains working code and models for a collaboration between Harvard Data Analytics and the World Health Organization.
 
