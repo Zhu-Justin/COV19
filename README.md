@@ -4,7 +4,7 @@ This project contains working code and models for a collaboration between Harvar
 
 We were able to successfully create an interface that displays estimated transmission rates and epidemic curves of the COVID-19 virus based on the number of COVID-19 cases for a given country. 
 
-This interface was deployed in March 2019 and helped the World Health Organization and 20+ countries successfully monitor transmission rates and prescribe public policies addressing the COVID-19 epidemic.
+This interface was deployed in April 2019 and helped the World Health Organization and 20+ countries successfully monitor transmission rates and prescribe public policies addressing the COVID-19 epidemic.
 
 https://harvardanalytics.shinyapps.io/covid19/
 
